@@ -1,0 +1,49 @@
+CUSTOMER: phone is unique (not just not null).
+
+ADMIN: phone is not unique (only not null).
+
+BUS:
+* Added status (default: 'active') for soft delete.
+* Added date (not null) for date-specific scheduling.
+* busName is not unique (same name can be used for different dates).
+
+BOOKING:
+* bookingId is VARCHAR(50), not just varchar.
+* seats is INTEGER[] (PostgreSQL array).
+* passengers is JSONB (optional/nullable).
+* status default is 'confirmed'.
+
+PASSENGER:
+* bookingId is VARCHAR(50).
+* seatType and price are optional (nullable).
+
+1. ENTERPRISE: busCount default is 0.
+
+Relationships
+* ADMIN → ENTERPRISE: One-to-One
+* ADMIN → BUS: One-to-Many
+* ENTERPRISE → BUS: One-to-Many (via enterpriseName)
+* CUSTOMER → BOOKING: One-to-Many
+* ADMIN → BOOKING: One-to-Many
+* BUS → BOOKING: One-to-Many (onDelete: RESTRICT - bookings preserved when bus is cancelled)
+* BOOKING → PASSENGER: One-to-Many
+
+
+
+
+1. CUSTOMER — customer accounts
+* Fields: customerId, fullName, email, phone, password
+1. ADMIN — admin accounts
+* Fields: adminId, fullName, email, enterpriseName, password
+1. ENTERPRISE — business info
+* Fields: enterpriseName (PK), adminId, busCount
+* One admin = one enterprise
+1. BUS — bus schedules
+* Fields: busId, busName, adminId, enterpriseName, from, to, date, departureTime, arrivalTime, seaterPrice, sleeperPrice, totalSeats, status
+* Status: 'active' or 'cancelled' (soft delete)
+1. BOOKING — booking records
+* Fields: bookingId (PK, e.g., "BK123456"), busId, customerId, adminId, date, seats (array), totalAmount, status
+* Status: 'confirmed' or 'cancelled'
+1. PASSENGER — passenger details
+* Fields: passengerId, bookingId, name, age, gender, seatNumber, seatType, price
+* Normalized: separate from bookings
