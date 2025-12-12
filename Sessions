@@ -1,0 +1,28 @@
+Benefits of having sessions:
+
+1. Cannot be manipulated by client
+2. HttpOnly cookies prevent XSS attacks
+3. Server-side validation
+4. Automatic session management
+5. Centralized logout
+6.Works across tabs
+
+
+Express Core Concepts:
+Concept	Role
+App	Main server instance
+Router	Groups routes by module
+Route	Defines URL endpoints
+Controller	Handles logic for routes
+Middleware	Runs before/after routes
+Model	Handles data schema and DB
+Service	Contains business logic
+Request/Response	Communicate between client/server
+Error Handler	Centralized error catching
+
+Middleware types:
+Logging
+Authentication
+Parsing
+Security
+CORS
