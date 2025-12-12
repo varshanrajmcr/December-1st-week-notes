@@ -1,0 +1,32 @@
+
+^1.2.7 	—> 		1 . ^ . ^
+
+~5.3.2	—>		5 . 3 . ^		see this as well - will it directly download the best/latest version - how?
+
+
+
+
+How to check the current dependency version without going to the website
+npm list express
+npm list --depth=0
+
+npm view express versions
+
+Indexing
+
+EXPLAIN ANALYZE
+SELECT * FROM users WHERE email = 'charlie@gmail.com';
+
+CREATE INDEX idx_users_email ON users(email);
+
+Normalisation
+
+What is the need of sequalize - directly we can write queries right?
+
+
+#1F1F1F
+
+
+Sequalize - ORM (Object Relational Mapper)
+JS code → SQL queries → DB results → JS objects
+
