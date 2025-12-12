@@ -1,0 +1,235 @@
+1. POST /api/customer/signup
+
+{
+  "fullName": "string (required)",
+  "email": "string (required)",
+  "phone": "string (required)",
+  "password": "string (required, min 6 chars)",
+  "confirmPassword": "string (required, must match password)"
+}
+{
+  "message": "Customer account created successfully",
+  "user": {
+    "id": "number",
+    "fullName": "string",
+    "email": "string",
+    "userType": "customer"
+  }
+}
+* Error (400): { "error": "string" }
+
+2. POST /api/customer/login
+{
+  "email": "string (required)",
+  "password": "string (required)"
+}
+
+
+
+{
+  "message": "Login successful",
+  "user": {
+    "id": "number",
+    "fullName": "string",
+    "email": "string",
+    "userType": "customer"
+  }
+}
+* Error (400/401): { "error": "string" }
+
+
+3. POST /api/admin/signup
+{
+  "fullName": "string (required)",
+  "email": "string (required)",
+  "phone": "string (required)",
+  "adminKey": "string (required, must be 'ADMIN123')",
+  "password": "string (required, min 6 chars)",
+  "confirmPassword": "string (required, must match password)"
+}
+{
+  "message": "Admin account created successfully",
+  "user": {
+    "id": "number",
+    "fullName": "string",
+    "email": "string",
+    "userType": "admin"
+  }
+}
+* Error (400/403): { "error": "string" }
+
+
+4. POST /api/admin/login
+{
+  "email": "string (required)",
+  "password": "string (required)"
+}
+{
+  "message": "Login successful",
+  "user": {
+    "id": "number",
+    "fullName": "string",
+    "email": "string",
+    "userType": "admin"
+  }
+}
+* Error (400/401): { "error": "string" }
+
+
+5. GET /api/session
+{
+  "authenticated": true,
+  "user": {
+    "id": "number",
+    "fullName": "string",
+    "email": "string",
+    "userType": "customer" | "admin"
+  }
+}
+{
+  "authenticated": false,
+  "message": "User not found"
+}
+
+6. POST /api/logout
+None (uses session)
+Output:
+* Success (200): { "message": "Logout successful" }
+* Error (500): { "error": "Error logging out" }
+
+7. POST /api/buses/search
+{
+  "from": "string (required)",
+  "to": "string (required)",
+  "date": "string (required)",
+  "passengers": "number (optional, defaults to 1)"
+}
+{
+  "buses": [
+    {
+      "id": "number",
+      "from": "string",
+      "to": "string",
+      "availableSeats": "number",
+      // ... other bus properties
+    }
+  ],
+  "count": "number"
+}
+* Error (400): { "error": "string" }
+
+
+8. GET /api/buses
+None 
+
+{
+  "buses": [
+    {
+      "id": "number",
+      // ... bus properties
+    }
+  ]
+}
+
+9. GET /api/buses/:id
+* id: number (required)
+
+{
+  "bus": {
+    "id": "number",
+    “From”:”string”,
+    // ... bus properties
+  }
+}
+
+* Error (404): { "error": "Bus not found" }
+
+10. POST /api/bookings/create
+{
+  "busId": "number (required)",
+  "date": "string (required)",
+  "seats": ["number"] (required, array, non-empty),
+  "passengers": [
+    {
+      "name": "string (required)",
+      "age": "number (required)",
+      "gender": "string (required)",
+      "seatNumber": "number (required)"
+    }
+  ] (required, array, length must match seats),
+  "totalAmount": "number (required)"
+}
+
+{
+  "message": "Booking confirmed successfully",
+  "bookingId": "string (e.g., 'BK1234567890')",
+  "booking": {
+    "id": "number",
+    "bookingId": "string",
+    "busId": "number",
+    "date": "string",
+    "seats": ["number"],
+    "totalAmount": "number",
+    "status": "confirmed"
+  }
+}
+* Error (400/401/403/404): { "error": "string" }
+
+11. GET /api/bookings/customer
+* Session: Requires requireCustomer middleware (uses req.session.userId)
+
+{
+  "bookings": [
+    {
+      "id": "number",
+      "bookingId": "string",
+      "busId": "number",
+      "customerId": "number",
+      "date": "string",
+      "seats": ["number"],
+      "passengers": ["object"],
+      "totalAmount": "number",
+      "status": "string"
+    }
+  ],
+  "count": "number"
+}
+* Error (401/403): { "error": "string" }
+
+
+12. GET /api/bookings/:bookingId
+* bookingId: string/number (required)
+
+{
+  "booking": {
+    "id": "number",
+    "bookingId": "string",
+    // ... booking properties
+  }
+}
+* Error (404): { "error": "Booking not found" }
+
+13. GET /api/bookings
+Input: None
+
+{
+  "bookings": [
+    {
+      "id": "number",
+      // ... booking properties
+    }
+  ],
+  "count": "number"
+}
+
+
+
+STATUS CODES USED:
+————————————
+        200: Success
+	201: Created
+* 400: Bad Request (validation errors) missing values
+* 401: Unauthorized (authentication required) mismatch
+* 403: Forbidden (insufficient permissions) invalid key
+* 404: Not Found
+
